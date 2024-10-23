@@ -5,7 +5,6 @@ import relative_display_functions
 import graph_data
 import config_data
 
-
 class Player:
 
     def __init__(self, player_config_data, player_index, batch, group):
@@ -19,6 +18,7 @@ class Player:
         self.player_config_data = player_config_data
         self.distance_traveled = 0
         self.nodes_traversed = 0 
+        self.finished = False
 
     def update_location(self, x, y):
         self.sprite.update(relative_display_functions.get_relative_graph_x(x) - self.sprite.width / 2,
@@ -30,6 +30,7 @@ class Player:
         self.absolute_y = graph_data.graph_data[global_game_data.current_graph_index][0][0][1]
         self.distance_traveled = 0
         self.nodes_traversed = 0
+        self.finished = False
 
     def update(self, dt):
         last_absolute_x = self.absolute_x
@@ -46,7 +47,9 @@ class Player:
         if global_game_data.current_player_index == self.player_index:
             if self.current_objective >= len(global_game_data.graph_paths[self.player_index]):
                 self.current_objective = 0
+                self.finished = True
                 global_game_data.current_player_index = global_game_data.current_player_index + 1
+                
 
         # Move player under normal circumstances
         if self.current_objective >= 0 and global_game_data.current_player_index == self.player_index:

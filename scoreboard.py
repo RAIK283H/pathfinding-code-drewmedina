@@ -60,10 +60,11 @@ class Scoreboard:
                                    font_size=self.font_size, batch=batch, group=group, color=player[2][colors.TEXT_INDEX])
             self.player_path_display.append(
                 (path_label, player))
-
+            self.winner_label = pyglet.text.Label('Winner: ', x=0, y=0, 
+                                              font_name='Arial', font_size=self.font_size, batch=batch, group=group)
     def update_elements_locations(self):
         self.distance_to_exit_label.x = config_data.window_width - self.stat_width
-        self.distance_to_exit_label.y = config_data.window_height - self.stat_height;
+        self.distance_to_exit_label.y = config_data.window_height - self.stat_height
         for index, (display_element, player) in enumerate(self.player_name_display):
             display_element.x = config_data.window_width - self.stat_width
             display_element.y = config_data.window_height - self.base_height_offset - self.stat_height * 2 - self.stat_height * (index * self.number_of_stats)
@@ -112,6 +113,17 @@ class Scoreboard:
                 if player_object.player_config_data == player_configuration_info:
                     display_element.text = "Nodes Traveled: " + str(int(player_object.nodes_traversed))
 
+    def update_winner(self):
+        min_distance = float('inf')
+        winner = None
+        target_node = global_game_data.target_node[global_game_data.current_graph_index]
+
+        for player_object in global_game_data.player_objects:
+            path = global_game_data.graph_paths[player_object.player_index]
+            if path and target_node in path and player_object.finished and player_object.distance_traveled < min_distance:
+                min_distance = player_object.distance_traveled
+                winner = player_object.player_config_data[0]
+        self.winner_label.text = 'Winner: ' + (winner if winner else 'TBD')
 
     def update_scoreboard(self):
         self.update_elements_locations()
@@ -119,3 +131,4 @@ class Scoreboard:
         self.update_distance_to_exit()
         self.update_distance_traveled()
         self.updated_nodes_traveled()
+        self.update_winner()
