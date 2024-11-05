@@ -78,7 +78,6 @@ def get_dfs_path():
     res, to_target = dfs([], 0, target_node)
     visited = set()
     res, to_end = dfs([], target_node, end)
-    
     assert(to_target)
     assert(to_end)
     for i in range(len(to_target) - 1):

@@ -4,7 +4,7 @@ import unittest
 import global_game_data
 import graph_data
 from pathing import get_bfs_path, get_dfs_path
-
+import permutation
 
 class TestPathFinding(unittest.TestCase):
 
@@ -126,6 +126,42 @@ class TestPathFinding(unittest.TestCase):
         except AssertionError:
             return
         self.fail("No error")
-
+    
+    def test_sjt(self):
+        graph = [[(0, 0), [1,2]], 
+                 [(0, 1), [0, 3]],
+                 [(1, 1), [0, 3]],
+                 [(1, 0), [1, 2]]]
+        actual = permutation.sjt(graph)
+        expected = [[0, 1, 2, 3], [0, 1, 3, 2], [0, 3, 1, 2], [3, 0, 1, 2], 
+                    [3, 0, 2, 1], [0, 3, 2, 1], [0, 2, 3, 1], [0, 2, 1, 3], [2, 0, 1, 3], [2, 0, 3, 1],
+                      [2, 3, 0, 1], [3, 2, 0, 1], [3, 2, 1, 0], [2, 3, 1, 0], [2, 1, 3, 0], [2, 1, 0, 3], 
+                      [1, 2, 0, 3], [1, 2, 3, 0], [1, 3, 2, 0], [3, 1, 2, 0], [3, 1, 0, 2], [1, 3, 0, 2], 
+                      [1, 0, 3, 2], [1, 0, 2, 3]]
+        self.assertEqual(actual, expected)
+    def test_hamiltonian(self):
+        graph = [[(0, 0), [1,2]], 
+                 [(0, 1), [0, 3]],
+                 [(1, 1), [0, 3]],
+                 [(1, 0), [1, 2]]]
+        actual = permutation.check_hamiltonian(graph, permutation.sjt(graph))
+        expected =[[0, 1, 3, 2, 0], [0, 2, 3, 1, 0], [2, 0, 1, 3, 2], [3, 2, 0, 1, 3], [2, 3, 1, 0, 2], [1, 3, 2, 0, 1], [3, 1, 0, 2, 3], [1, 0, 2, 3, 1]]
+        self.assertEqual(actual, expected)
+    def test_optimals(self):
+        graph = [[(0, 0), [1,2]], 
+                 [(0, 1), [0, 3]],
+                 [(1, 1), [0, 3]],
+                 [(1, 0), [1, 2]]]
+        actual = permutation.optimal_cycles(graph, permutation.sjt(graph))
+        expected = [[0, 1, 3, 2, 0], [[0, 2, 3, 1, 0]], [[2, 0, 1, 3, 2]], [[3, 2, 0, 1, 3]], [[2, 3, 1, 0, 2]], [[1, 3, 2, 0, 1]], [[3, 1, 0, 2, 3]], [[1, 0, 2, 3, 1]]]   
+        self.assertEqual(actual, expected)
+    def test_largest_clique(self):
+        graph = [[(0, 0), [1,2]], 
+                 [(0, 1), [0, 2]],
+                 [(1, 1), [0, 1]],
+                 [(1, 0), [1, 2]]]
+        actual = permutation.get_largest_clique(graph)
+        expected = [1, 2]   
+        self.assertEqual(actual, expected)
 if __name__ == '__main__':
     unittest.main()
