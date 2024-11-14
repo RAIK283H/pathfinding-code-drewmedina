@@ -3,7 +3,7 @@ import unittest
 
 import global_game_data
 import graph_data
-from pathing import get_bfs_path, get_dfs_path
+from pathing import get_bfs_path, get_dfs_path, get_dijkstra_path
 import permutation
 
 class TestPathFinding(unittest.TestCase):
@@ -163,5 +163,32 @@ class TestPathFinding(unittest.TestCase):
         actual = permutation.get_largest_clique(graph)
         expected = [1, 2]   
         self.assertEqual(actual, expected)
+    def test_get_dijkstra_path(self):
+        idx = 0
+        target = 2
+
+        global_game_data.current_graph_index = idx
+        global_game_data.target_node = {idx: target}
+        graph_data.graph_data = [
+                [[(0, 0), [1, 2]], [(1, 1), [0, 3]], [(2, 2), [0, 3]], [(3, 3), [1, 2]]]
+            ]
+        
+        path = get_dijkstra_path() 
+        self.assertIsNotNone(path) 
+        self.assertTrue(len(path) > 0) 
+        self.assertEqual(path, [0, 2, 3])
+    def test_get_dijkstra_path_fail(self):
+        idx = 0
+        target = 2
+
+        global_game_data.current_graph_index = idx
+        global_game_data.target_node = {idx: target}
+        graph_data.graph_data = [ [[(0, 0), [1]],
+                                 [(1, 1), [0]], 
+                                 [(2, 2), [3]], 
+                                 [(3, 3), [2]] ]]
+        
+        path = get_dijkstra_path() 
+        self.assertEqual(path, None)
 if __name__ == '__main__':
     unittest.main()
