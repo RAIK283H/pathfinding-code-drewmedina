@@ -1,10 +1,10 @@
 import math
 import unittest
-
 import global_game_data
 import graph_data
 from pathing import get_bfs_path, get_dfs_path, get_dijkstra_path
 import permutation
+import f_w
 
 class TestPathFinding(unittest.TestCase):
 
@@ -190,5 +190,50 @@ class TestPathFinding(unittest.TestCase):
         
         path = get_dijkstra_path() 
         self.assertEqual(path, None)
+
+    def test_f_w_small_matrix(self):
+        graph = [
+            [(0, 0), [1]],
+            [(1, 0), [0, 2]],
+            [(2, 0), [1, 3]],
+            [(3, 0), [2]]
+        ]
+        path = [0, 1, 2, 3]
+        f_w_path = f_w.find_optimal_path(graph, 0)
+        assert path == f_w_path, "F_W Small Matrix Failed"
+
+    def test_f_w_large_matrix(self):
+        graph = [
+            [(0, 0), [1, 2]],
+            [(1, 1), [0, 3, 4]],
+            [(2, 0), [0, 4]],
+            [(1, -1), [1, 5]],
+            [(3, 0), [1, 2, 5, 6]],
+            [(2, -2), [3, 4, 6]],
+            [(4, 0), [4, 5, 7]],
+            [(5, 0), [6]]
+        ]
+        path = [0, 2, 4, 6, 7]
+        f_w_path = f_w.find_optimal_path(graph, 0)
+        assert path == f_w_path, "F_W Large Matrix Failed"
+
+    def test_f_w_fail(self):
+        graph = [
+            [(0, 30), [1, 2]],
+            [(231, 50), [0]],
+            [(220, 1), [0]],
+            [(12340, 10), [4]], 
+            [(11, 1000), [3]], 
+            [(20, 20), []], 
+            [(155, 30), [0]], 
+            [(351, 100), [0]]
+        ]
+        path = [0]
+        graph_matrix = f_w.convert_graph_to_matrix(graph)
+        _, P = f_w.compute_shortest_paths(graph_matrix)
+        f_w_path = f_w.build_path(P, 0, 6)
+        print("HELLO", path, f_w_path)
+        assert path == f_w_path[:-1], "F_W fail test did not fail" 
+
 if __name__ == '__main__':
     unittest.main()

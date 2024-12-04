@@ -4,12 +4,15 @@ import global_game_data
 from numpy import random
 from collections import deque
 import heapq
+from config_data import player_data
+import f_w
 def set_current_graph_paths():
     global_game_data.graph_paths.clear()
     global_game_data.graph_paths.append(get_test_path())
     global_game_data.graph_paths.append(get_random_path())
-    global_game_data.graph_paths.append(get_dfs_path())
-    global_game_data.graph_paths.append(get_bfs_path())
+#    global_game_data.graph_paths.append(get_dfs_path())
+#    global_game_data.graph_paths.append(get_bfs_path())
+    global_game_data.graph_paths.append(get_fw_path())
     global_game_data.graph_paths.append(get_dijkstra_path())
 
 
@@ -171,3 +174,15 @@ def get_dijkstra_path():
 
 def get_euclidean_distance(cord_1, cord_2):
     return sqrt((cord_1[0] - cord_2[0])**2 + (cord_1[1] - cord_2[1])**2)
+
+def get_fw_path():
+    graph_index = global_game_data.current_graph_index
+    graph = graph_data.graph_data[graph_index]
+    target_node = global_game_data.target_node[graph_index]
+    path = f_w.find_optimal_path(graph, target_node)
+    assert (target_node in path)
+    assert(len(graph) - 1 in path)
+    for i in range(len(path) - 1):
+        assert(path[i + 1] in graph[path[i]][1])
+    print(f"Full Path: {path}")
+    return path
